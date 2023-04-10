@@ -13,14 +13,14 @@ async function getAddressFromCEP(cep: string) {
 
   const { data: cepInfo } = await request.get(`${process.env.VIA_CEP_API}/${cep}/json/`);
 
-  const cepInfoEntriesToCheck = ['logradouro', 'complemento', 'bairro', 'localidade', 'uf'];
+  const requiredKeys = ['logradouro', 'complemento', 'bairro', 'localidade', 'uf'];
+
   if (cepInfo.erro) {
-    throw invalidDataError(['CEP invalid']);
+    throw invalidDataError(['invalid CEP']);
   }
-  for (const [key, value] of Object.entries(cepInfo)) {
-    if (cepInfoEntriesToCheck.includes(key) && !value) {
-      throw invalidCepError();
-    }
+
+  if (requiredKeys.some((key) => !cepInfo[key])) {
+    throw invalidCepError();
   }
 
   // if (!cepInfo) {
