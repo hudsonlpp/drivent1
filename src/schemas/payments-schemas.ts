@@ -4,7 +4,7 @@ interface CardData {
   issuer: string;
   number: number;
   name: string;
-  expirationDate: Date;
+  expirationDate: string | Date;
   cvv: number;
 }
 
@@ -17,7 +17,7 @@ const cardDataSchema: ObjectSchema<CardData> = Joi.object({
   issuer: Joi.string().required(),
   number: Joi.number().required(),
   name: Joi.string().required(),
-  expirationDate: Joi.date().required(),
+  expirationDate: Joi.string().required(),
   cvv: Joi.number().required(),
 });
 
