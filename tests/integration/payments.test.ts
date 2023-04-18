@@ -8,7 +8,7 @@ import {
   createUser,
   createTicketType,
   createTicket,
-  postPayments,
+  createPayment,
   generateCreditCardData,
 } from '../factories';
 import { cleanDb, generateValidToken } from '../helpers';
@@ -90,7 +90,7 @@ describe('GET /payments', () => {
       const ticketType = await createTicketType();
       const ticket = await createTicket(enrollment.id, ticketType.id, TicketStatus.RESERVED);
 
-      const payment = await postPayments(ticket.id, ticketType.price);
+      const payment = await createPayment(ticket.id, ticketType.price);
 
       const response = await server.get(`/payments?ticketId=${ticket.id}`).set('Authorization', `Bearer ${token}`);
 
