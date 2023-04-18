@@ -2,7 +2,7 @@ import { ApplicationError } from '@/protocols';
 
 export function unauthorizedError(): ApplicationError {
   return {
-    name: 'UnauthorizedError',
+    name: 'unauthorizedError',
     message: 'You must be signed in to continue',
   };
 }

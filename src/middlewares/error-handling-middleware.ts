@@ -6,9 +6,9 @@ export function handleApplicationErrors(
   err: ApplicationError | Error,
   _req: Request,
   res: Response,
-  next: NextFunction,
+  _next: NextFunction,
 ) {
-  if (err.name === 'CannotEnrollBeforeStartDateError' || err.name === 'InvalidCepError') {
+  if (err.name === 'CannotEnrollBeforeStartDateError') {
     return res.status(httpStatus.BAD_REQUEST).send({
       message: err.message,
     });
@@ -26,7 +26,13 @@ export function handleApplicationErrors(
     });
   }
 
-  if (err.name === 'NotFoundError') {
+  if (err.name === 'unauthorizedError') {
+    return res.status(httpStatus.UNAUTHORIZED).send({
+      message: err.message,
+    });
+  }
+
+  if (err.name === 'notFoundError') {
     return res.status(httpStatus.NOT_FOUND).send({
       message: err.message,
     });
