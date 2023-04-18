@@ -4,9 +4,9 @@ import enrollmentRepository from '@/repositories/enrollment-repository';
 import paymentsRepository from '@/repositories/payments-repository';
 import { PaymentInfoType } from '@/controllers';
 
-type FindPaymentsType = { userId: number; ticketId: number };
+type getPaymentsType = { userId: number; ticketId: number };
 
-async function findPayments({ userId, ticketId }: FindPaymentsType) {
+async function getPayments({ userId, ticketId }: getPaymentsType) {
   const ticket = await ticketRepository.findTicketById(ticketId);
 
   if (!ticket) {
@@ -23,15 +23,15 @@ async function findPayments({ userId, ticketId }: FindPaymentsType) {
     throw unauthorizedError();
   }
 
-  return await paymentsRepository.findPayments();
+  return await paymentsRepository.getPayments();
 }
 
-type CreatePaymentType = {
+type postPaymentsType = {
   paymentInfo: PaymentInfoType;
   userId: number;
 };
 
-async function createPayment({ paymentInfo, userId }: CreatePaymentType) {
+async function postPayments({ paymentInfo, userId }: postPaymentsType) {
   const { ticketId, cardData } = paymentInfo;
 
   const ticket = await ticketRepository.findTicketById(ticketId);
@@ -54,12 +54,12 @@ async function createPayment({ paymentInfo, userId }: CreatePaymentType) {
 
   await ticketRepository.updateTicketById(ticketId);
 
-  return await paymentsRepository.createPayment({ ticketId, cardData, value: ticketType.price });
+  return await paymentsRepository.postPayments({ ticketId, cardData, value: ticketType.price });
 }
 
 const paymentsService = {
-  findPayments,
-  createPayment,
+  getPayments,
+  postPayments,
 };
 
 export default paymentsService;

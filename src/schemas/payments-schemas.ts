@@ -8,7 +8,7 @@ interface CardData {
   cvv: number;
 }
 
-interface CreatePaymentType {
+interface postPaymentsType {
   ticketId: number;
   cardData: CardData;
 }
@@ -21,7 +21,7 @@ const cardDataSchema: ObjectSchema<CardData> = Joi.object({
   cvv: Joi.number().required(),
 });
 
-export const createPaymentSchema: ObjectSchema<CreatePaymentType> = Joi.object({
+export const postPaymentsSchema: ObjectSchema<postPaymentsType> = Joi.object({
   ticketId: Joi.number().required(),
   cardData: cardDataSchema.required(),
 });

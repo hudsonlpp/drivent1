@@ -13,7 +13,7 @@ export async function getPayments(_req: AuthenticatedRequest, res: Response) {
       return res.status(httpStatus.BAD_REQUEST).send('Bad Request');
     }
 
-    const [payments] = await paymentsService.findPayments({ userId, ticketId });
+    const [payments] = await paymentsService.getPayments({ userId, ticketId });
 
     return res.status(httpStatus.OK).send(payments);
   } catch (error) {
@@ -30,28 +30,6 @@ export async function getPayments(_req: AuthenticatedRequest, res: Response) {
   }
 }
 
-const { userId } = _req as { userId: number };
-const ticketId = +_req.query.ticketId;
-
-try {
-  if (!ticketId) throw badRequestError();
-
-  const [payments] = await paymentsService.findPayments({ userId, ticketId });
-
-  return res.status(httpStatus.OK).send(payments);
-} catch (error) {
-  if (error.name === 'BadRequestError') {
-    return res.sendStatus(httpStatus.BAD_REQUEST);
-  }
-  if (error.name === 'NotFoundError') {
-    return res.sendStatus(httpStatus.NOT_FOUND);
-  }
-  if (error.name === 'UnauthorizedError') {
-    return res.status(httpStatus.UNAUTHORIZED).send('Unauthorized');
-  }
-  return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
-}
-
 export type PaymentInfoType = {
   ticketId: number;
   cardData: {
@@ -63,22 +41,22 @@ export type PaymentInfoType = {
   };
 };
 
-export async function createPayment(_req: AuthenticatedRequest, res: Response) {
+export async function postPayments(_req: AuthenticatedRequest, res: Response) {
   const paymentInfo = _req.body as PaymentInfoType;
   const { userId } = _req as { userId: number };
 
   try {
-    const payment = await paymentsService.createPayment({ paymentInfo, userId });
+    const payment = await paymentsService.postPayments({ paymentInfo, userId });
 
     return res.status(httpStatus.OK).send(payment);
   } catch (error) {
     if (error.name === 'NotFoundError') {
-      return res.sendStatus(httpStatus.NOT_FOUND);
+      return res.status(httpStatus.NOT_FOUND).send('Not Found');
     }
     if (error.name === 'UnauthorizedError') {
-      return res.sendStatus(httpStatus.UNAUTHORIZED);
+      return res.status(httpStatus.UNAUTHORIZED).send('Unauthorized');
     }
     console.log(error);
-    return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).send('Internal Server Error');
   }
 }
