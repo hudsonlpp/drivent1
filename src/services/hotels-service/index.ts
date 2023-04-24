@@ -6,14 +6,13 @@ import { ticketRepository } from '@/repositories/ticket-repository';
 
 async function verifyHotelTicketAndPayment(userId: number) {
   const enrollment = await enrollmentRepository.findWithAddressByUserId(userId);
+  const ticket = await ticketRepository.findTicketByEnrollmentId(enrollment.id);
 
-  if (!enrollment) {
+  if (!enrollment || !ticket) {
     throw notFoundError();
   }
 
-  const ticket = await ticketRepository.findTicketByEnrollmentId(enrollment.id);
-
-  if (!ticket || ticket.status !== 'PAID' || !ticket.TicketType.includesHotel || ticket.TicketType.isRemote) {
+  if (ticket.status !== 'PAID' || !ticket.TicketType.includesHotel || ticket.TicketType.isRemote) {
     throw paymentRequiredError();
   }
 
