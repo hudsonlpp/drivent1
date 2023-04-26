@@ -19,7 +19,7 @@ export async function getHotels(req: HotelRequest, res: Response, next: NextFunc
 }
 
 export async function getHotelRooms(req: HotelRequest, res: Response, next: NextFunction) {
-  const { userId } = req;
+  const userId = Number(req.userId);
   const hotelId = req.params.hotelId;
 
   try {
