@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import httpStatus from 'http-status';
 import { ApplicationError } from '@/protocols';
 
@@ -34,6 +34,18 @@ export function handleApplicationErrors(
 
   if (err.name === 'notFoundError') {
     return res.status(httpStatus.NOT_FOUND).send({
+      message: err.message,
+    });
+  }
+
+  if (err.name === 'CannotListHotelsError') {
+    return res.status(httpStatus.NOT_FOUND).send({
+      message: err.message,
+    });
+  }
+
+  if (err.name === 'CannotBookError') {
+    return res.status(httpStatus.FORBIDDEN).send({
       message: err.message,
     });
   }

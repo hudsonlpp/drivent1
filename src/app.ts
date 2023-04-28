@@ -7,7 +7,7 @@ import { loadEnv, connectDb, disconnectDB } from '@/config';
 
 loadEnv();
 
-import { handleApplicationErrors, authenticateToken } from '@/middlewares';
+import { handleApplicationErrors } from '@/middlewares';
 import {
   usersRouter,
   authenticationRouter,
@@ -30,8 +30,7 @@ app
   .use('/tickets', ticketsRouter)
   .use('/payments', paymentsRouter)
   .use('/hotels', hotelsRouter)
-  .use(handleApplicationErrors)
-  .use(authenticateToken);
+  .use(handleApplicationErrors);
 
 export function init(): Promise<Express> {
   connectDb();
