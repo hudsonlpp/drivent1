@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import httpStatus from 'http-status';
 import { AuthenticatedRequest } from '@/middlewares';
-import paymentsService from '@/services/payments-service';
+import { paymentsService } from '@/services';
 
 export async function getPaymentByTicketId(req: AuthenticatedRequest, res: Response) {
   try {

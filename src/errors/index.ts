@@ -8,3 +8,5 @@ export * from './request-error';
 export * from './bad-request-error';
 export * from './payment-required-error';
 export * from './cannot-book-error';
+export * from './cannot-list-hotels-error';
+export * from './invalid-cep-error';

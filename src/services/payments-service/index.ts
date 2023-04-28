@@ -42,4 +42,4 @@ async function paymentProcess(ticketId: number, userId: number, cardData: CardPa
   return payment;
 }
 
-export default { getPaymentByTicketId, paymentProcess };
+export const paymentsService = { getPaymentByTicketId, paymentProcess };
