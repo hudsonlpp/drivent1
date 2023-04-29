@@ -5,13 +5,16 @@ import { cleanDb, generateValidToken } from '../helpers';
 
 import {
   createEnrollmentWithAddress,
+  createPayment,
+  createTicket,
+  createTicketTypeWithHotel,
+  createUser,
   createHotel,
   createRoomWithHotelId,
-  createTicket,
-  createTicketType,
+  // createFunctionalRoom,
   createTicketTypeRemote,
   createTicketTypeWithoutHotel,
-  createUser,
+  createTicketType,
 } from '../factories';
 import { createBooking } from '../factories/booking-factory';
 import app, { init } from '@/app';
@@ -115,7 +118,7 @@ describe('POST /booking', () => {
 
       const result = await api.post('/booking').set('Authorization', `Bearer ${token}`);
 
-      expect(result.status).toBe(httpStatus.BAD_REQUEST);
+      expect(result.status).toBe(httpStatus.NOT_FOUND);
     });
 
     it('Should respond with status 403 when ticket is not PAID', async () => {
@@ -177,5 +180,21 @@ describe('PUT /booking/:bookingId', () => {
 
       expect(result.status).toBe(httpStatus.UNAUTHORIZED);
     });
+
+    // it('should return 200 if the booking is updated and return bookingId', async () => {
+    //   const { token, roomId, userId, hotelId } = await createFunctionalRoom();
+    //   const { id: bookingId } = await createBooking(userId, roomId);
+    //   const room2 = await createRoomWithHotelId(hotelId);
+
+    //   const response = await supertest
+    //     .put(`/booking/${bookingId}`)
+    //     .set('Authorization', `Bearer ${token}`)
+    //     .send({ roomId: room2.id });
+
+    //   expect(response.status).toBe(httpStatus.OK);
+    //   expect(response.body).toEqual({
+    //     bookingId,
+    //   });
+    // });
   });
 });

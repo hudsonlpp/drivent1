@@ -1,4 +1,4 @@
-import hotelsService from '../hotels-service';
+import { hotelsService } from '@/services';
 import { cannotBookError, notFoundError } from '@/errors';
 import bookingRepository from '@/repositories/booking-repository';
 
