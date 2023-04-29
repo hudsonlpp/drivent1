@@ -9,8 +9,8 @@ export async function getBooking(req: AuthenticatedRequest, res: Response, next:
     const booking = await bookingService.getBooking(userId);
 
     return res.status(httpStatus.OK).send(booking);
-  } catch (e) {
-    next(e);
+  } catch (error) {
+    next(error);
   }
 }
 
@@ -22,8 +22,8 @@ export async function postBooking(req: AuthenticatedRequest, res: Response, next
     const idBooking = await bookingService.postBooking(userId, parseInt(roomId));
 
     return res.status(httpStatus.OK).send({ bookingId: idBooking });
-  } catch (e) {
-    next(e);
+  } catch (error) {
+    next(error);
   }
 }
 
@@ -32,13 +32,12 @@ export async function updateBooking(req: AuthenticatedRequest, res: Response, ne
   const { bookingId } = req.params;
   const { roomId } = req.body;
   if (!roomId) return res.sendStatus(httpStatus.BAD_REQUEST);
-  if (!bookingId) return res.sendStatus(httpStatus.BAD_REQUEST);
   try {
     const bookingUpdated = await bookingService.updateBooking(userId, bookingId, parseInt(roomId));
 
     return res.status(httpStatus.OK).send({ bookingId: bookingUpdated });
-  } catch (e) {
-    console.log(e);
-    next(e);
+  } catch (error) {
+    console.log(error);
+    next(error);
   }
 }

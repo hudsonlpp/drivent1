@@ -1,3 +1,4 @@
+import { create } from 'domain';
 import faker from '@faker-js/faker';
 import { TicketStatus } from '@prisma/client';
 import { generateValidToken } from '../helpers';
@@ -28,6 +29,15 @@ export async function createRoomWithHotelId(hotelId: number) {
   });
 }
 
+export async function createFunctionalRoom(hotelId: number) {
+  return await prisma.room.create({
+    data: {
+      name: faker.name.findName(),
+      capacity: 1,
+      hotelId: hotelId,
+    },
+  });
+}
 // export async function createFunctionalRoom() {
 //   const user = await createUser();
 //   const token = await generateValidToken(user);

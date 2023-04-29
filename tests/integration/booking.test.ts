@@ -11,7 +11,7 @@ import {
   createUser,
   createHotel,
   createRoomWithHotelId,
-  // createFunctionalRoom,
+  createFunctionalRoom,
   createTicketTypeRemote,
   createTicketTypeWithoutHotel,
   createTicketType,
@@ -32,14 +32,14 @@ const api = supertest(app);
 describe('GET /booking', () => {
   describe('When token is invalid or doesnt exists', () => {
     it('Should respond with status 401 if no token is given', async () => {
-      const result = await api.get('/hotels');
+      const result = await api.get('/booking');
 
       expect(result.status).toBe(httpStatus.UNAUTHORIZED);
     });
 
     it('Should respond with status 401 if given token is not valid', async () => {
       const token = 'randomWord';
-      const result = await api.get('/hotels').set('Authorization', `Bearer ${token}`);
+      const result = await api.get('/booking').set('Authorization', `Bearer ${token}`);
 
       expect(result.status).toBe(httpStatus.UNAUTHORIZED);
     });
@@ -54,14 +54,6 @@ describe('GET /booking', () => {
   });
 
   describe('When token is valid', () => {
-    it('Should respond with status 404 if user has no booking', async () => {
-      const user = await createUser();
-      const token = await generateValidToken(user);
-      const result = await api.get('/booking').set('Authorization', `Bearer ${token}`);
-
-      expect(result.status).toBe(httpStatus.NOT_FOUND);
-    });
-
     it('Should respond with status 200 and booking', async () => {
       const user = await createUser();
       const token = await generateValidToken(user);
@@ -83,20 +75,28 @@ describe('GET /booking', () => {
         },
       });
     });
+    it('Should respond with status 404 if user has no booking', async () => {
+      const user = await createUser();
+      const token = await generateValidToken(user);
+
+      const result = await api.get('/booking').set('Authorization', `Bearer ${token}`);
+
+      expect(result.status).toBe(httpStatus.NOT_FOUND);
+    });
   });
 });
 
 describe('POST /booking', () => {
   describe('When token is invalid or doesnt exists', () => {
     it('Should respond with status 401 if no token is given', async () => {
-      const result = await api.get('/hotels');
+      const result = await api.get('/booking');
 
       expect(result.status).toBe(httpStatus.UNAUTHORIZED);
     });
 
     it('Should respond with status 401 if given token is not valid', async () => {
       const token = 'randomWord';
-      const result = await api.get('/hotels').set('Authorization', `Bearer ${token}`);
+      const result = await api.get('/booking').set('Authorization', `Bearer ${token}`);
 
       expect(result.status).toBe(httpStatus.UNAUTHORIZED);
     });
@@ -105,7 +105,7 @@ describe('POST /booking', () => {
       const userWithoutSession = await createUser();
       const token = jwt.sign({ userId: userWithoutSession.id }, process.env.JWT_SECRET);
 
-      const result = await api.get('/hotels').set('Authorization', `Bearer ${token}`);
+      const result = await api.get('/booking').set('Authorization', `Bearer ${token}`);
 
       expect(result.status).toBe(httpStatus.UNAUTHORIZED);
     });
