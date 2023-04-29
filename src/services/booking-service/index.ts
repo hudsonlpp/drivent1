@@ -1,6 +1,7 @@
-import { hotelsService } from '@/services';
 import { cannotBookError, notFoundError } from '@/errors';
 import bookingRepository from '@/repositories/booking-repository';
+import enrollmentRepository from '@/repositories/enrollment-repository';
+import ticketsRepository from '@/repositories/tickets-repository';
 
 async function verifyAvailabilityFromRooms(roomId: number) {
   const room = await bookingRepository.findRoomById(roomId);
@@ -14,6 +15,18 @@ async function verifyAvailabilityFromRooms(roomId: number) {
   return room;
 }
 
+async function listHotels(userId: number) {
+  const enrollment = await enrollmentRepository.findWithAddressByUserId(userId);
+  if (!enrollment) {
+    throw cannotBookError();
+  }
+  const ticket = await ticketsRepository.findTicketByEnrollmentId(enrollment.id);
+
+  if (!ticket || ticket.status !== 'PAID' || ticket.TicketType.isRemote || !ticket.TicketType.includesHotel) {
+    throw cannotBookError();
+  }
+}
+
 async function getBooking(userId: number) {
   const booking = await bookingRepository.getBooking(userId);
 
@@ -23,8 +36,7 @@ async function getBooking(userId: number) {
 }
 
 async function postBooking(userId: number, roomId: number) {
-  await hotelsService.listHotels(userId);
-
+  await listHotels(userId);
   await verifyAvailabilityFromRooms(roomId);
 
   return await bookingRepository.postBooking(userId, roomId);

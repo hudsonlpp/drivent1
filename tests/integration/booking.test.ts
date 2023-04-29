@@ -11,7 +11,7 @@ import {
   createUser,
   createHotel,
   createRoomWithHotelId,
-  createFunctionalRoom,
+  // createFunctionalRoom,
   createTicketTypeRemote,
   createTicketTypeWithoutHotel,
   createTicketType,
@@ -118,7 +118,7 @@ describe('POST /booking', () => {
 
       const result = await api.post('/booking').set('Authorization', `Bearer ${token}`);
 
-      expect(result.status).toBe(httpStatus.NOT_FOUND);
+      expect(result.status).toBe(httpStatus.BAD_REQUEST);
     });
 
     it('Should respond with status 403 when ticket is not PAID', async () => {
@@ -127,9 +127,8 @@ describe('POST /booking', () => {
       const enrollment = await createEnrollmentWithAddress(user);
       const ticketType = await createTicketType();
       await createTicket(enrollment.id, ticketType.id, 'RESERVED');
-
-      const result = await api.get('/hotels').set('Authorization', `Bearer ${token}`);
-
+      const body = { roomId: 1 };
+      const result = await api.post('/booking').set('Authorization', `Bearer ${token}`).send(body);
       expect(result.status).toBe(httpStatus.FORBIDDEN);
     });
 
@@ -138,9 +137,10 @@ describe('POST /booking', () => {
       const token = await generateValidToken(user);
       const enrollment = await createEnrollmentWithAddress(user);
       const ticketType = await createTicketTypeRemote();
-      await createTicket(enrollment.id, ticketType.id, 'PAID');
-
-      const result = await api.get('/hotels').set('Authorization', `Bearer ${token}`);
+      const ticket = await createTicket(enrollment.id, ticketType.id, 'PAID');
+      const payment = await createPayment(ticket.id, ticketType.price);
+      const body = { roomId: 1 };
+      const result = await api.post('/booking').set('Authorization', `Bearer ${token}`).send(body);
       expect(result.status).toBe(httpStatus.FORBIDDEN);
     });
 
@@ -149,9 +149,10 @@ describe('POST /booking', () => {
       const token = await generateValidToken(user);
       const enrollment = await createEnrollmentWithAddress(user);
       const ticketType = await createTicketTypeWithoutHotel();
-      await createTicket(enrollment.id, ticketType.id, 'PAID');
-
-      const result = await api.get('/hotels').set('Authorization', `Bearer ${token}`);
+      const ticket = await createTicket(enrollment.id, ticketType.id, 'PAID');
+      const payment = await createPayment(ticket.id, ticketType.price);
+      const body = { roomId: 1 };
+      const result = await api.post('/booking').set('Authorization', `Bearer ${token}`).send(body);
 
       expect(result.status).toBe(httpStatus.FORBIDDEN);
     });
