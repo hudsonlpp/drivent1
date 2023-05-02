@@ -8,8 +8,8 @@ export async function getTicketTypes(req: AuthenticatedRequest, res: Response, n
   try {
     const ticketTypes = await ticketService.getTicketType();
     return res.status(httpStatus.OK).send(ticketTypes);
-  } catch (e) {
-    next(e);
+  } catch (error) {
+    next(error);
   }
 }
 
@@ -19,8 +19,8 @@ export async function getTickets(req: AuthenticatedRequest, res: Response, next:
   try {
     const ticket = await ticketService.getTicketByUserId(userId);
     return res.status(httpStatus.OK).send(ticket);
-  } catch (e) {
-    next(e);
+  } catch (error) {
+    next(error);
   }
 }
 
@@ -31,7 +31,7 @@ export async function createTicket(req: AuthenticatedRequest, res: Response, nex
   try {
     const ticket = await ticketService.createTicket(userId, ticketTypeId);
     return res.status(httpStatus.CREATED).send(ticket);
-  } catch (e) {
-    next(e);
+  } catch (error) {
+    next(error);
   }
 }
